@@ -1,3 +1,5 @@
+Option Explicit
+
 Sub LoopStockXchange()
 'Define loop function to go through pages
     Dim Page As Byte
@@ -16,17 +18,19 @@ Sub LoopStockXchange()
     Dim percent_change As Double
     Dim totalvol As Variant
     totalvol = 0
-    yr_open = 0
-    yr_close = 0
+    
 'Define the summary logic
     Dim Rollup_cell_all As Integer
     Rollup_cell_all = 2
 
     Dim lastrow As Variant
+    
+    Dim tickercounter As Long
+    tickercounter = 0
+    
 'counts the number of rows
     lastrow = Cells(1, 1).End(xlDown).Row
 
-    
 
 
     
@@ -46,13 +50,14 @@ Sub LoopStockXchange()
 
  ' print the tickers
                 ticker = Cells(i, 1).Value
-                
+                yr_open = Cells((i) - tickercounter, 3).Value
+                yr_close = Cells(i, 6).Value
+              
                 
 ' Add to the volume Total
                 totalvol = totalvol + Cells(i, 7).Value
-                yr_open = yr_open + Cells(i, 3).Value
-                yr_close = yr_close + Cells(i, 6).Value
-                  
+             
+                
                             
 'calculations for yearly change and percent change
                     yearly_change = yr_close - yr_open
@@ -78,15 +83,15 @@ Sub LoopStockXchange()
                 
  'Reset the Total Volume, Yearly change volume and percent change volume
             totalvol = 0
-            yr_close = 0
-            yr_open = 0
+            tickercounter = 0
                 
              Else
              
   ' Add to the volume Total
                 totalvol = totalvol + Cells(i, 7).Value
-                yr_open = yr_open + Cells(i, 3).Value
-                yr_close = yr_close + Cells(i, 6).Value
+                tickercounter = tickercounter + 1
+               
+                 
                 
                  
             End If
@@ -101,9 +106,11 @@ Sub LoopStockXchange()
                  
 'move to next row
         Next i
-                          
-            Columns("K").NumberFormat = "0.00%"
-            
+        
+ 'format percentage
+ 
+          Columns("K").NumberFormat = "0.00%"
+                   
 'move to next page
     Next Page
     
